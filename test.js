@@ -24,6 +24,7 @@ studio.setGlyph('Airport', function (glyph) {
   studio.setGlyphColor('#f0f')
   setTimeout(function () {
     studio.setGlyph('Pizza')
+    console.log(studio.toDataURL())
   }, 1000)
 })
 

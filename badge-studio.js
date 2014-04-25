@@ -12,7 +12,7 @@
       return url.trim().indexOf('data:image') === 0
     },
 
-    imageFromUrl: function imageFromUrl(url, callback) {
+    imageFromURL: function imageFromURL(url, callback) {
       if (!BadgeStudio.util.isDataURL(url))
         return fabric.Image.fromURL(url, callback)
 
@@ -42,15 +42,6 @@
       // require this to be an instance method.
       BadgeStudio.util.loadSVG('ribbons', name, callback)
     },
-
-    loadGlyph: function loadRibbon(name, callback) {
-      // TODO: make prefix directory configurable. That will likely
-      // require this to be an instance method.
-
-      // XXX: it would be ideal to get glyphs in SVG format. If that
-      // happens, this needs to change to `BadgeStudio.util.loadSVG`
-      BadgeStudio.util.imageFromUrl('glyphs/' + name + '.png', callback)
-    }
   }
 
   BadgeStudio.defaultRibbonOptions = {
@@ -163,7 +154,7 @@
     callback = callback || noop
     var canvas = this.canvas
 
-    BadgeStudio.util.imageFromUrl(url, function (image) {
+    BadgeStudio.util.imageFromURL(url, function (image) {
       if (this.image)
         canvas.remove(this.image)
 
@@ -244,9 +235,7 @@
 
 
   /**
-   * Set a glyph. There can only be one active glyph on the canvas right
-   * now (for arbitrary reasons), so `BadgeStudio#removeGlyph` will be
-   * called before trying to add a new one.
+   * Set a glyph. Delegates to `BadgeStudio#setGlyphFromURL`
    *
    * @param {String} name The name of the glyph to add. Should be a file
    *   (without file extension) from the `glyphs/` directory.
@@ -254,12 +243,32 @@
    * @param {Function} [callback] Invoked once the glyph has been
    *   rendered to the canvas. Optional.
    *
+   * @see BadgeStudio#setGlyphFromURL
    */
   BadgeStudio.prototype.setGlyph = function setGlyph(name, callback) {
+    return this.setGlyphFromURL('glyphs/' + name + '.png', callback)
+  }
+
+  /**
+   * Set a glyph from an arbitrary URL. There can only be one active
+   * glyph on the canvas right now (for arbitrary reasons), so
+   * `BadgeStudio#removeGlyph` will be called before trying to add the
+   * new one.
+   *
+   * @param {String} url URL for the glyph image file. Should probably
+   *   be a relatively simple shape.
+   *
+   * @param {Function} [callback] Invoked after the glyph has been
+   *   rendered to the canvas. Optional.
+   *
+   * @see BadgeStudio@setGlyphColor
+   */
+
+  BadgeStudio.prototype.setGlyphFromURL = function setGlyphFromURL(url, callback) {
     callback = callback || noop
     var canvas = this.canvas
     this.removeGlyph()
-    BadgeStudio.util.loadGlyph(name, function (glyph) {
+    BadgeStudio.util.imageFromURL(url, function (glyph) {
       canvas.add(glyph).renderAll()
       glyph.center()
       glyph.moveTo(1)
@@ -307,6 +316,16 @@
     })
     glyph.filters[0] = filter
     glyph.applyFilters(canvas.renderAll.bind(canvas))
+  }
+
+  /**
+   * Get a DataURL representation of what's currently visible on the
+   * canvas.
+   *
+   * @return {String} PNG data in DataURL format.
+   */
+  BadgeStudio.prototype.toDataURL = function toDataURL() {
+    return this.canvas.toDataURL()
   }
 
   window.BadgeStudio = BadgeStudio
