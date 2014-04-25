@@ -35,6 +35,8 @@
     },
 
     loadShape: function loadShape(shape, callback) {
+      // TODO: make prefix directory configurable. That will likely
+      // require this to be an instance method.
       BadgeStudio.util.loadSVG('shapes', shape, callback)
     }
   }
@@ -47,6 +49,9 @@
   BadgeStudio.defaultShapeOptions = {
     top: 0,
     left: 0,
+
+    // TODO: these should be configurable (and thus likely be attached
+    // to the instance instead of the class)
     width: 500,
     height: 500,
   }
@@ -64,14 +69,13 @@
    * to the shape so anything outside of that shape will not get
    * shown.
    *
-   * Shapes should have a corresponding entry in `BadgeStudio.shapes` and
-   * an svg file in the `/shapes` folder (e.g. `/shapes/hexagon.svg`). The
-   * SVG file is lazy loaded and cached.
-   *
    * Shapes are mutually exclusive, not additive, so a new shape will
    * replace the clipping mask of the old shape.
    *
-   * @param {String} type The type of shape
+   * @param {String} shapeName The type of shape. Should have a
+   *   corresponding entry in `BadgeStudio.shapes` and an svg file in the
+   *   `shapes/` folder (e.g. `shapes/hexagon.svg`).
+   *
    * @param {Function} [callback] Invoked after the clipping mask is
    *   applied and the canvas is re-rendered. Optional.
    */
