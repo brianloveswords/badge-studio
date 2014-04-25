@@ -155,9 +155,8 @@
     var canvas = this.canvas
 
     BadgeStudio.util.imageFromURL(url, function (image) {
-      if (this.image)
-        canvas.remove(this.image)
-
+      this.removeBackgroundImage()
+      this.removeBackgroundPattern()
       this.image = image
 
       canvas.add(image).renderAll()
@@ -169,6 +168,13 @@
     }.bind(this))
   }
 
+  /**
+   * Remove the background image, if there is one.
+   */
+  BadgeStudio.prototype.removeBackgroundImage = function removeBackgroundImage() {
+    if (!this.image) return
+    this.canvas.remove(this.image)
+  }
 
   /**
    * Set the top ribbon. Calls `BadgeStudio#styleRibbon` to figure out
@@ -263,7 +269,6 @@
    *
    * @see BadgeStudio@setGlyphColor
    */
-
   BadgeStudio.prototype.setGlyphFromURL = function setGlyphFromURL(url, callback) {
     callback = callback || noop
     var canvas = this.canvas
@@ -326,6 +331,52 @@
    */
   BadgeStudio.prototype.toDataURL = function toDataURL() {
     return this.canvas.toDataURL()
+  }
+
+  /**
+   * Set background pattern. Removes background image if there's one set.
+   *
+   * @param {String} url HTTP URL or DataURL. Must conform to
+   *   Same-Origin-Policy (or be CORS capable).
+   *
+   * @param {Function} [callback] Invoked when the pattern is
+   * rendered. Optional.
+   */
+  BadgeStudio.prototype.setBackgroundPattern = function setBackgroundPattern(url, callback) {
+    callback = callback || noop
+    var canvas = this.canvas
+    var image = document.createElement('img')
+    image.src = url
+    image.onload = function onload() {
+      image.onload = null
+      this.removeBackgroundImage()
+      this.removeBackgroundPattern()
+      var pattern = new fabric.Pattern({
+        source: image,
+        repeat: 'repeat'
+      })
+
+      var rect = this.pattern = new fabric.Rect({
+        left: 0,
+        top: 0,
+        width: canvas.width,
+        height: canvas.height,
+        fill: pattern,
+        selectable: false,
+      })
+
+      canvas.add(rect).renderAll()
+      rect.moveTo(0)
+      return callback()
+    }.bind(this)
+  }
+
+  /**
+   * Remove the background pattern.
+   */
+  BadgeStudio.prototype.removeBackgroundPattern = function removeBackgroundPattern() {
+    if (!this.pattern) return
+    this.canvas.remove(this.pattern)
   }
 
   window.BadgeStudio = BadgeStudio

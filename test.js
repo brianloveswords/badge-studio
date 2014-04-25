@@ -24,7 +24,16 @@ studio.setGlyph('Airport', function (glyph) {
   studio.setGlyphColor('#f0f')
   setTimeout(function () {
     studio.setGlyph('Pizza')
-    console.log(studio.toDataURL())
+
+    studio.setBackgroundPattern('patterns/congruent_outline.png', function (pattern) {
+      studio.setBackgroundImage('lsd-cats.png', function () {
+        setTimeout(function () {
+          studio.setBackgroundPattern('patterns/congruent_outline.png', function (pattern) {
+            console.log(studio.toDataURL())
+          })
+        }, 1000)
+      })
+    })
   }, 1000)
 })
 
