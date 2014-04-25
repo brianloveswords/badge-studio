@@ -8,6 +8,8 @@ Requires fabric.js to be loaded beforehand. Note, this was developed against v1.
 <script src="http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.4.0/fabric.min.js"></script>
 ```
 
+------------------------------------------------------------------------
+
 ### new BadgeStudio(canvasId)
 * `canvasId`: HTML ID for the canvas.
 
