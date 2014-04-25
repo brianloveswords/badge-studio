@@ -184,7 +184,6 @@
    *
    * @see BadgeStudio#styleRibbon
    */
-
   BadgeStudio.prototype.setRibbon = function setRibbon(name, callback) {
     callback = callback || noop
     var canvas = this.canvas
@@ -211,7 +210,6 @@
    * @see BadgeStudio#setRibbon
    * @see BadgeStudio#setShape
    */
-
   BadgeStudio.prototype.styleRibbon = function styleRibbon(style) {
     if (!this.ribbon) return
     style = style || {}
