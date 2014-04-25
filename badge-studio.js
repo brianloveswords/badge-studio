@@ -1,6 +1,8 @@
 (function (fabric) {
   if (!fabric) throw new Error('fabric must be loaded before loading BadgeStudio')
 
+  function noop() {}
+
   function BadgeStudio(canvasId) {
     this.canvas = new fabric.Canvas(canvasId)
     this.shape = null
@@ -30,20 +32,28 @@
     loadSVG: function loadSVG(prefix, name, callback) {
       var path = prefix + '/' + name + '.svg'
       fabric.loadSVGFromURL(path, function (objects, options) {
-        return callback(objects[0])
+        return callback(new fabric.Group(objects))
       })
     },
 
-    loadShape: function loadShape(shape, callback) {
+    loadShape: function loadShape(name, callback) {
       // TODO: make prefix directory configurable. That will likely
       // require this to be an instance method.
-      BadgeStudio.util.loadSVG('shapes', shape, callback)
+      BadgeStudio.util.loadSVG('shapes', name, callback)
+    },
+
+    loadRibbon: function loadRibbon(name, callback) {
+      // TODO: make prefix directory configurable. That will likely
+      // require this to be an instance method.
+      BadgeStudio.util.loadSVG('ribbons', name, callback)
     }
   }
 
-  BadgeStudio.defaultBannerOptions = {
-    scaleY: 0.2,
-    scaleX: 0.2,
+  BadgeStudio.defaultRibbonOptions = {
+    scaleY: 0.8,
+    scaleX: 0.8,
+    left: 100,
+    top: 0,
   }
 
   BadgeStudio.defaultShapeOptions = {
@@ -57,11 +67,11 @@
   }
 
   BadgeStudio.shapes = {
-    hexagon: {bannerOptions: { top: 20, left: 100 },},
+    hexagon: {ribbonOptions: { top: 20 }},
+    square: {ribbonOptions: { left: 75 }},
     circle: {},
-    square: {},
     shield: {},
-    diamond: {},
+    diamond: {ribbonOptions: { top: 45, left: 120 }},
   }
 
   /**
@@ -80,13 +90,14 @@
    *   applied and the canvas is re-rendered. Optional.
    */
   BadgeStudio.prototype.setShape = function setShape(shapeName, callback) {
-    callback = callback || function(){}
+    callback = callback || noop
 
     this.shape = shapeName
 
     var canvas = this.canvas
     var shapeData = BadgeStudio.shapes[shapeName] || {}
     var initialize = shapeData.initialize
+    var styleRibbon = this.styleRibbon.bind(this)
 
     if (shapeData.cache) {
       finish(shapeData.cache)
@@ -105,6 +116,7 @@
 
       canvas.clipTo = function (ctx) { shape.render(ctx) }
       canvas.renderAll()
+      styleRibbon()
       callback()
       return
     }
@@ -143,21 +155,77 @@
    *    image is succesfully set. Optional.
    */
   BadgeStudio.prototype.setBackgroundImage = function setBackgroundImage(url, callback) {
-    callback = callback || function () {}
-    var currentImage = this.image
+    callback = callback || noop
     var canvas = this.canvas
 
     BadgeStudio.util.imageFromUrl(url, function (image) {
-      if (currentImage)
-        canvas.remove(currentImage)
+      if (this.image)
+        canvas.remove(this.image)
 
       this.image = image
 
       canvas.add(image)
       image.center()
-
+      image.moveTo(0)
       return callback(image)
     }.bind(this))
+  }
+
+
+  /**
+   * Set the top ribbon. Calls `BadgeStudio#styleRibbon` to figure out
+   * how to style the ribbon.
+   *
+   * @param {String} name The name of the ribbon to load. The SVG file
+   *   should be located in the `ribbons/` folder.
+   *
+   * @param {Function} [callback] Invoked once the ribbon has been
+   *   applied to the canvas. Optional.
+   *
+   * @see BadgeStudio#styleRibbon
+   */
+
+  BadgeStudio.prototype.setRibbon = function setRibbon(name, callback) {
+    callback = callback || noop
+    var canvas = this.canvas
+
+    BadgeStudio.util.loadRibbon(name, function (ribbon) {
+      if (this.ribbon)
+        canvas.remove(this.ribbon)
+
+      this.ribbon = ribbon
+      this.styleRibbon()
+      canvas.add(ribbon)
+      ribbon.moveTo(Infinity)
+      return callback(ribbon)
+    }.bind(this))
+  }
+
+  /**
+   * Set the styles on the ribbon. Invoked from `BadgeStudio#setRibbon`
+   * and `BadgeStudio#setShape`. Uses `BadgeStudio.defaultRibbonOptions`
+   * and `BadgeStudio.shapes[currentShape].ribbonOptions` to set default
+   * styles before user overrides from the optional `style` param.
+   *
+   * @param {Object} style The style definition to pass to `fabric.Object#set`. Optional.
+   * @see BadgeStudio#setRibbon
+   * @see BadgeStudio#setShape
+   */
+
+  BadgeStudio.prototype.styleRibbon = function styleRibbon(style) {
+    if (!this.ribbon) return
+    style = style || {}
+    var ribbon = this.ribbon
+    var shape = BadgeStudio.shapes[this.shape] || {}
+    var defaultOptions = BadgeStudio.defaultRibbonOptions || {}
+    var shapeRibbonOptions = shape.ribbonOptions || {}
+    ribbon.set(defaultOptions)
+    ribbon.set(shapeRibbonOptions)
+    ribbon.set(style)
+    if (ribbon.canvas) {
+      ribbon.canvas.renderAll()
+      ribbon.moveTo(Infinity)
+    }
   }
 
   window.BadgeStudio = BadgeStudio
