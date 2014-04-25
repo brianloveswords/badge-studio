@@ -46,6 +46,9 @@
     loadGlyph: function loadRibbon(name, callback) {
       // TODO: make prefix directory configurable. That will likely
       // require this to be an instance method.
+
+      // XXX: it would be ideal to get glyphs in SVG format. If that
+      // happens, this needs to change to `BadgeStudio.util.loadSVG`
       BadgeStudio.util.imageFromUrl('glyphs/' + name + '.png', callback)
     }
   }
@@ -240,6 +243,18 @@
   }
 
 
+  /**
+   * Set a glyph. There can only be one active glyph on the canvas right
+   * now (for arbitrary reasons), so `BadgeStudio#removeGlyph` will be
+   * called before trying to add a new one.
+   *
+   * @param {String} name The name of the glyph to add. Should be a file
+   *   (without file extension) from the `glyphs/` directory.
+   *
+   * @param {Function} [callback] Invoked once the glyph has been
+   *   rendered to the canvas. Optional.
+   *
+   */
   BadgeStudio.prototype.setGlyph = function setGlyph(name, callback) {
     callback = callback || noop
     var canvas = this.canvas
@@ -255,11 +270,27 @@
     }.bind(this))
   }
 
+  /**
+   * Remove the glyph that's currently on the canvas.
+   */
   BadgeStudio.prototype.removeGlyph = function removeGlyph() {
     if (!this.glyph) return
     this.canvas.remove(this.glyph)
   }
 
+  /**
+   * Set the color of the glyph on the canvas.
+   *
+   * XXX: Because glyphs are currently PNGs, this has to use image
+   * filters, which are slow. We should eventually change to using SVGs
+   * (at least our defaults should be SVGs) and change this method to
+   * use some smart detection to check whether we can use a fill or if
+   * we're stuck with a filter.
+   *
+   * @param {String} color A string representing a color. Can be in any
+   *   format that `new fabric.Color` accepts, but it's probably easiest
+   *   to just use a hex representation, e.g. '#ff00ff'
+   */
   BadgeStudio.prototype.setGlyphColor = function setGlyphColor(color) {
     if (!this.glyph) return
 
