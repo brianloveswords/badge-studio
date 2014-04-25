@@ -20,6 +20,15 @@ BadgeStudio.util = {
       imageElement.onload = null
       return callback(new fabric.Image(imageElement))
     }
+  },
+  loadSVG: function loadSVG(prefix, name, callback) {
+    var path = prefix + '/' + name + '.svg'
+    fabric.loadSVGFromURL(path, function (objects, options) {
+      return callback(objects[0])
+    })
+  },
+  loadShape: function loadShape(type, callback) {
+    BadgeStudio.util.loadSVG('shapes', type, callback)
   }
 }
 
@@ -41,20 +50,6 @@ BadgeStudio.shapes = {
   diamond: {},
 }
 
-BadgeStudio.loadSVG = function (prefix, name, callback) {
-  var path = prefix + '/' + name + '.svg'
-  fabric.loadSVGFromURL(path, function (objects, options) {
-    return callback(objects[0])
-  })
-}
-
-BadgeStudio.loadShape = function loadShape(type, callback) {
-  BadgeStudio.loadSVG('shapes', type, callback)
-}
-BadgeStudio.loadRibbon = function loadRibbon(type, callback) {
-  BadgeStudio.loadSVG('ribbons', type, callback)
-}
-
 BadgeStudio.prototype.setShape = function setShape(type, callback) {
   callback = callback || function(){}
 
@@ -68,7 +63,7 @@ BadgeStudio.prototype.setShape = function setShape(type, callback) {
     return finish(shapeData.cache)
   }
 
-  return BadgeStudio.loadShape(type, finish)
+  return BadgeStudio.util.loadShape(type, finish)
 
   function finish(shape) {
     shapeData.cache = shape
