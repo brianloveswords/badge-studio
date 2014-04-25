@@ -73,9 +73,11 @@ studio.setBackgroundImage('http://x.bjb.io/lsd-cats.png', function() {
 })
 ```
 
+Or load a file from the local server:
+
 ```js
 studio.setBackgroundImage('lsd-cats.png', function() {
-  console.log(cat background, but used a local file this time')
+  console.log('cat background, but used a local file this time')
 })
 ```
 ------------------------------------------------------------------------
