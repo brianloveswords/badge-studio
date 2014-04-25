@@ -5,11 +5,6 @@
 
   function BadgeStudio(canvasId) {
     this.canvas = new fabric.Canvas(canvasId)
-    this.shape = null
-    this.image = null
-    this.fill = null
-    this.icon = null
-    this.banner = null
   }
 
   BadgeStudio.util = {
@@ -46,6 +41,12 @@
       // TODO: make prefix directory configurable. That will likely
       // require this to be an instance method.
       BadgeStudio.util.loadSVG('ribbons', name, callback)
+    },
+
+    loadGlyph: function loadRibbon(name, callback) {
+      // TODO: make prefix directory configurable. That will likely
+      // require this to be an instance method.
+      BadgeStudio.util.imageFromUrl('glyphs/' + name + '.png', callback)
     }
   }
 
@@ -54,6 +55,7 @@
     scaleX: 0.8,
     left: 100,
     top: 0,
+    selectable: false,
   }
 
   BadgeStudio.defaultShapeOptions = {
@@ -63,15 +65,15 @@
     // TODO: these should be configurable (and thus likely be attached
     // to the instance instead of the class)
     width: 500,
-    height: 500,
+    height: 500
   }
 
   BadgeStudio.shapes = {
     hexagon: {ribbonOptions: { top: 20 }},
     square: {ribbonOptions: { left: 75 }},
-    circle: {},
-    shield: {},
     diamond: {ribbonOptions: { top: 45, left: 120 }},
+    circle: {},
+    shield: {}
   }
 
   /**
@@ -164,9 +166,11 @@
 
       this.image = image
 
-      canvas.add(image)
+      canvas.add(image).renderAll()
       image.center()
       image.moveTo(0)
+      if (this.glyph)
+        canvas.setActiveObject(this.glyph)
       return callback(image)
     }.bind(this))
   }
@@ -194,10 +198,19 @@
 
       this.ribbon = ribbon
       this.styleRibbon()
-      canvas.add(ribbon)
+      canvas.add(ribbon).renderAll()
       ribbon.moveTo(Infinity)
       return callback(ribbon)
     }.bind(this))
+  }
+
+  /**
+   * Remove the ribbon from the canvas
+   */
+
+  BadgeStudio.prototype.removeRibbon = function removeRibbon() {
+    if (!this.ribbon) return
+    this.canvas.remove(this.ribbon)
   }
 
   /**
@@ -224,6 +237,45 @@
       ribbon.canvas.renderAll()
       ribbon.moveTo(Infinity)
     }
+  }
+
+
+  BadgeStudio.prototype.setGlyph = function setGlyph(name, callback) {
+    callback = callback || noop
+    var canvas = this.canvas
+    this.removeGlyph()
+    BadgeStudio.util.loadGlyph(name, function (glyph) {
+      canvas.add(glyph).renderAll()
+      glyph.center()
+      glyph.moveTo(1)
+      canvas.setActiveObject(glyph)
+      this.glyph = glyph
+      this.setGlyphColor()
+      return callback()
+    }.bind(this))
+  }
+
+  BadgeStudio.prototype.removeGlyph = function removeGlyph() {
+    if (!this.glyph) return
+    this.canvas.remove(this.glyph)
+  }
+
+  BadgeStudio.prototype.setGlyphColor = function setGlyphColor(color) {
+    if (!this.glyph) return
+
+    color = color || this.glyphColor
+    this.glyphColor = color
+
+    if (!color) return
+
+    var glyph = this.glyph
+    var canvas = this.canvas
+    var filter = new fabric.Image.filters.Tint({
+      color: color,
+      opacity: 1
+    })
+    glyph.filters[0] = filter
+    glyph.applyFilters(canvas.renderAll.bind(canvas))
   }
 
   window.BadgeStudio = BadgeStudio
