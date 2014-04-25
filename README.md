@@ -2,8 +2,16 @@
 
 ## Usage
 
+Requires fabric.js to be loaded beforehand. Note, this was developed against v1.4.0 – I tried v1.4.5 initially, but the docs weren't up to date for it, so it's *highly* recommended you just use v1.4.0.
+
+```html
+<script src="http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.4.0/fabric.min.js"></script>
+```
+
 ### new BadgeStudio(canvasId)
 * `canvasId`: HTML ID for the canvas.
+
+------------------------------------------------------------------------
 
 ### BadgeStudio#setShape(name, [callback])
 * `name`: The type of shape. Should have a corresponding entry in `BadgeStudio.shapes` and an svg file in the `shapes/` folder (e.g. "shapes/hexagon.svg").
@@ -15,6 +23,8 @@ studio.setShape('hexagon', function() {
   console.log('clipping mask from "shapes/hexagon.svg" applied')
 })
 ```
+
+------------------------------------------------------------------------
 
 ### BadgeStudio#setBackgroundColor(color)
 * `color`: A string representing a color. This should be in one of the formats that `new fabric.Color` accepts:
@@ -28,6 +38,7 @@ studio.setShape('hexagon', function() {
 ```js
 studio.setBackgroundColor('#f0f')
 ```
+------------------------------------------------------------------------
 
 ### BadgeStudio#setBackgroundImage(url, [callback])
 * `url`: URL to create an image from. This can be a Data URL or a regular one. Note, this *must* be a CORS capable image or else the canvas will be tainted and `Canvas#toDataURL` will be broken with a security error. (Also, in Firefox the image will not be able to be moved.)
@@ -45,6 +56,7 @@ studio.setBackgroundImage('lsd-cats.png', function() {
   console.log(cat background, but used a local file this time')
 })
 ```
+------------------------------------------------------------------------
 
 ### BadgeStudio#setRibbon(name, [callback])
 * `name`: The name of the ribbon to load. The SVG file should be located in the `ribbons/` folder.
@@ -57,6 +69,8 @@ studio.setRibbon('blank', function() {
 })
 ```
 
+------------------------------------------------------------------------
+
 ### BadgeStudio#setGlyph(name, [callback])
 * `name`: The name of the glyph to add. Should be a file (without file extension) from the `glyphs/` directory.
 * `callback`: Invoked once the glyph has been rendered to the canvas. Optional.
@@ -67,6 +81,8 @@ studio.setGlyph('Pizza', function() {
   console.log('added "glyphs/Pizza.png" to the canvas')
 })
 ```
+
+------------------------------------------------------------------------
 
 ### BadgeStudio#setGlyphFromURL(url, [callback])
 * `url`: URL for the glyph image file. Should probably be a relatively simple shape. Can be a DataURL.
@@ -79,6 +95,8 @@ studio.setGlyphFromURL('glyphs/Pizza.png', function() {
 })
 ```
 
+------------------------------------------------------------------------
+
 ### BadgeStudio#setGlyphColor(color)
 * `color`: A string representing a color. Can be in any format that `new fabric.Color` accepts, but it's probably easiest to just use a hex representation, e.g. '#ff00ff'
 
@@ -87,6 +105,8 @@ studio.setGlyphFromURL('glyphs/Pizza.png', function() {
 // set the color to super hot pink
 studio.setGlyphColor('#f0f')
 ```
+
+------------------------------------------------------------------------
 
 ### BadgeStudio#setBackgroundPattern(url, [callback])
 * `url`:  HTTP URL or DataURL. Must conform to Same-Origin-Policy (or be CORS capable). Removes any previously set patterns or backgrounds.
@@ -100,6 +120,8 @@ studio.setBackgroundPattern(url, function () {
   console.log('set a repeating pattern')
 })
 ```
+
+------------------------------------------------------------------------
 
 ### BadgeStudio#toDataURL()
 Delegates to `canvas.toDataURL()`
