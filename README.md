@@ -8,6 +8,8 @@ Requires fabric.js to be loaded beforehand. Note, this was developed against v1.
 <script src="http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.4.0/fabric.min.js"></script>
 ```
 
+Also note, this documentation lists the most important methods, but is incomplete (for example, there are generally `remove` methods for every `set` method). Check the source if you want to know everything, it should be pretty readable.
+
 ------------------------------------------------------------------------
 
 ### new BadgeStudio(canvasId)
