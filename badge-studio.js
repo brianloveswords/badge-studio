@@ -215,8 +215,8 @@
     style = style || {}
     var ribbon = this.ribbon
     var shape = BadgeStudio.shapes[this.shape] || {}
-    var defaultOptions = BadgeStudio.defaultRibbonOptions || {}
     var shapeRibbonOptions = shape.ribbonOptions || {}
+    var defaultOptions = BadgeStudio.defaultRibbonOptions || {}
     ribbon.set(defaultOptions)
     ribbon.set(shapeRibbonOptions)
     ribbon.set(style)

@@ -1,17 +1,23 @@
 var canvasId = 'c'
 var studio = new BadgeStudio(canvasId)
 
+studio.setBackgroundColor('rgba(24,124,255,0.3)')
+studio.setBackgroundImage('lsd-cats.png')
 
-studio.setShape('hexagon', function () {
-  studio.setBackgroundColor('rgba(24,124,255,0.3)')
-  studio.setBackgroundImage('lsd-cats.png')
-  studio.setRibbon('blank', function (ribbon) {
-    studio.setShape('diamond')
+;['circle', 'hexagon', 'square', 'shield', 'diamond'].forEach(function (shape) {
+  document.getElementById(shape).addEventListener('click', function () {
+    studio.setShape(shape)
   })
 })
 
-// studio.setGlyph('Airport')
-// studio.setGlyphColor('#ff0')
+document.getElementById('ribbon').addEventListener('click', function () {
+  studio.setRibbon('blank')
+})
+
+// studio.setGlyph('Airport', function (glyph) {
+//   studio.setGlyphColor('#ff0')
+// })
+
 
 // studio.setBackgroundColor('#ff0')
 
