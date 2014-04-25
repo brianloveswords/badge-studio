@@ -117,10 +117,10 @@
    *   in one of the formats that `new fabric.Color` accepts:
    *     - short hex: '#f55';
    *     - long hex: '#123123'
-       *     - hex w/o #: '356735'
-       *     - rgb: 'rgb(100,0,100)'
-       *     - rgba: 'rgba(10, 20, 30, 0.5)'
-       */
+   *     - hex w/o #: '356735'
+   *     - rgb: 'rgb(100,0,100)'
+   *     - rgba: 'rgba(10, 20, 30, 0.5)'
+   */
   BadgeStudio.prototype.setBackgroundColor = function setBackgroundColor(color) {
     var canvas = this.canvas
     canvas.backgroundColor = color
