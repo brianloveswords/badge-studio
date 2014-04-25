@@ -113,7 +113,7 @@ studio.setGlyph('Pizza', function() {
 #### Example
 ```js
 studio.setGlyphFromURL('glyphs/Pizza.png', function() {
-  console.log('this is what studio#setGlyph('Pizza') delegates to')
+  console.log('this is what studio#setGlyph("Pizza") delegates to')
 })
 ```
 
