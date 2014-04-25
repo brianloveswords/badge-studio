@@ -239,7 +239,6 @@
     }
   }
 
-
   /**
    * Set a glyph. Delegates to `BadgeStudio#setGlyphFromURL`
    *
@@ -262,7 +261,7 @@
    * new one.
    *
    * @param {String} url URL for the glyph image file. Should probably
-   *   be a relatively simple shape.
+   *   be a relatively simple shape. Can be a DataURL
    *
    * @param {Function} [callback] Invoked after the glyph has been
    *   rendered to the canvas. Optional.
@@ -324,23 +323,14 @@
   }
 
   /**
-   * Get a DataURL representation of what's currently visible on the
-   * canvas.
-   *
-   * @return {String} PNG data in DataURL format.
-   */
-  BadgeStudio.prototype.toDataURL = function toDataURL() {
-    return this.canvas.toDataURL()
-  }
-
-  /**
    * Set background pattern. Removes background image if there's one set.
    *
    * @param {String} url HTTP URL or DataURL. Must conform to
-   *   Same-Origin-Policy (or be CORS capable).
+   *   Same-Origin-Policy (or be CORS capable). Removes any previously
+   *   set patterns or backgrounds
    *
    * @param {Function} [callback] Invoked when the pattern is
-   * rendered. Optional.
+   *   rendered. Optional.
    */
   BadgeStudio.prototype.setBackgroundPattern = function setBackgroundPattern(url, callback) {
     callback = callback || noop
@@ -377,6 +367,16 @@
   BadgeStudio.prototype.removeBackgroundPattern = function removeBackgroundPattern() {
     if (!this.pattern) return
     this.canvas.remove(this.pattern)
+  }
+
+  /**
+   * Get a DataURL representation of what's currently visible on the
+   * canvas.
+   *
+   * @return {String} PNG data in DataURL format.
+   */
+  BadgeStudio.prototype.toDataURL = function toDataURL() {
+    return this.canvas.toDataURL()
   }
 
   window.BadgeStudio = BadgeStudio
