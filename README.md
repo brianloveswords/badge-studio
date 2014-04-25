@@ -1,5 +1,12 @@
 # badge-studio.js
 
+## TODO
+* **Inconsistent Bug**: Sometimes when a glyph is added on top of a background image, trying to move around the glyph moves around the background. This doesn't happen all the time, though, and it seems to happen more on Firefox than Chrome. Probably not a *huge* deal.
+* **Enhancement**: Caching/preloading. We lazyload shapes, but we probably shouldn't – clipping masks should be preloaded so they are instantaneous. Thankfully, we *do* cache them after they've been loaded once.
+* **Enhancement**: Warn (or preferably don't even allow) users when they try to add an image that violates Same-Origin-Policy. Doing a ton of work only to figure out the canvas has been tainted would suck.
+* **Enhancement**: Periodically save state to `localStorage`. This shouldn't be too hard – `fabric` is awesome serialization scheme. Basically, `JSON.stringify(fabricCanvas)` and `fabricCanvas.loadFromJSON()` would do the trick. We'd just need to figure out when to blow out that save state (for shared computers and such, probably on both a timelimit and "save and exit" event or something)
+* **Enhancement**: Text support. This was dropped for the MVP, but probably wouldn't be too hard to add back in if we really wanted it in there.
+
 ## Usage
 
 Requires fabric.js to be loaded beforehand. Note, this was developed against v1.4.0 – I tried v1.4.5 initially, but the docs weren't up to date for it, so it's *highly* recommended you just use v1.4.0.
