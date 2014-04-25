@@ -1,5 +1,5 @@
 var canvasId = 'c'
-var studio = new BadgeStudio(canvasId)
+var studio = new BadgeStudio(document.getElementById(canvasId))
 
 
 ;['circle', 'hexagon', 'square', 'shield', 'diamond'].forEach(function (shape) {

@@ -19,8 +19,19 @@ Also note, this documentation lists the most important methods, but is incomplet
 
 ------------------------------------------------------------------------
 
-### new BadgeStudio(canvasId)
-* `canvasId`: HTML ID for the canvas.
+### new BadgeStudio(canvas)
+* `canvas`: Canvas element. If you're feeling lazy, you can pass an ID here.
+
+### Example
+```js
+var studio = new BadgeStudio(someCanvasElement)
+```
+
+OR
+
+```js
+var studio = new BadgeStudio('some-canvas-id')
+```
 
 ------------------------------------------------------------------------
 
