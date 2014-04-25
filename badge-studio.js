@@ -43,12 +43,14 @@
     scaleY: 0.2,
     scaleX: 0.2,
   }
+
   BadgeStudio.defaultShapeOptions = {
     top: 0,
     left: 0,
     width: 500,
     height: 500,
   }
+
   BadgeStudio.shapes = {
     hexagon: {bannerOptions: { top: 20, left: 100 },},
     circle: {},
